@@ -1,20 +1,16 @@
 <?php
 /**
  * AdHub - Root Entry Point
- * Redirects to the appropriate dashboard based on login state and role.
+ * Uses: is_logged_in(), current_role(), redirect() from functions.php
  */
 
 session_start();
+require_once __DIR__ . '/includes/functions.php';
 
-if (!empty($_SESSION['user_id'])) {
-    // Already logged in — send to correct dashboard
-    if ($_SESSION['role'] === 'admin') {
-        header('Location: /adhub/admin/dashboard.php');
-    } else {
-        header('Location: /adhub/client/dashboard.php');
-    }
+if (is_logged_in()) {
+    redirect(current_role() === 'admin'
+        ? '/adhub/admin/dashboard.php'
+        : '/adhub/client/dashboard.php');
 } else {
-    // Not logged in — go to login
-    header('Location: /adhub/auth/login.php');
+    redirect('/adhub/auth/login.php');
 }
-exit;

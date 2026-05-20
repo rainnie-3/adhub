@@ -1,56 +1,48 @@
 <?php
 /**
  * AdHub - Registration Page
- * Allows new users to create a Client account.
- * Admin accounts can only be created by existing admins.
+ * Uses: register_user(), validate_registration(), is_logged_in(),
+ *       current_role(), redirect(), render_alert(), is_post(),
+ *       input_str(), csrf_field(), e()
  */
 
 session_start();
 require_once __DIR__ . '/../includes/db.php';
+require_once __DIR__ . '/../includes/functions.php';
 
 // Redirect if already logged in
-if (!empty($_SESSION['user_id'])) {
-    $redirect = $_SESSION['role'] === 'admin' ? '/adhub/admin/dashboard.php' : '/adhub/client/dashboard.php';
-    header("Location: $redirect");
-    exit;
+if (is_logged_in()) {
+    redirect(current_role() === 'admin'
+        ? '/adhub/admin/dashboard.php'
+        : '/adhub/client/dashboard.php');
 }
 
-$error   = '';
+$errors  = [];
 $success = '';
 
 // ── Handle POST ──────────────────────────────────────────────────────────────
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $name     = trim($_POST['name']     ?? '');
-    $email    = trim($_POST['email']    ?? '');
-    $company  = trim($_POST['company']  ?? '');
-    $password = $_POST['password']      ?? '';
-    $confirm  = $_POST['confirm']       ?? '';
+if (is_post()) {
+    $data = [
+        'name'     => input_str($_POST, 'name'),
+        'email'    => input_str($_POST, 'email'),
+        'password' => $_POST['password'] ?? '',
+        'confirm'  => $_POST['confirm']  ?? '',
+    ];
+    $company = input_str($_POST, 'company');
 
-    // Basic validation
-    if (empty($name) || empty($email) || empty($password)) {
-        $error = 'Name, email, and password are required.';
-    } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-        $error = 'Please enter a valid email address.';
-    } elseif (strlen($password) < 8) {
-        $error = 'Password must be at least 8 characters long.';
-    } elseif ($password !== $confirm) {
-        $error = 'Passwords do not match.';
+    // Validate form fields
+    $validation = validate_registration($data);
+
+    if (!$validation['valid']) {
+        $errors = $validation['errors'];
     } else {
-        // Check if email already exists
-        $check = $pdo->prepare("SELECT id FROM users WHERE email = ? LIMIT 1");
-        $check->execute([$email]);
+        // Attempt registration
+        $result = register_user($pdo, $data['name'], $data['email'], $data['password'], $company);
 
-        if ($check->fetch()) {
-            $error = 'An account with that email already exists.';
+        if ($result['success']) {
+            $success = 'Account created! You can now <a href="/adhub/auth/login.php" class="alert-link">sign in</a>.';
         } else {
-            // Insert new user (role defaults to 'client')
-            $hashed = password_hash($password, PASSWORD_DEFAULT);
-            $stmt   = $pdo->prepare(
-                "INSERT INTO users (name, email, password, role, company) VALUES (?, ?, ?, 'client', ?)"
-            );
-            $stmt->execute([$name, $email, $hashed, $company]);
-
-            $success = 'Account created! You can now <a href="/adhub/auth/login.php">log in</a>.';
+            $errors[] = $result['message'];
         }
     }
 }
@@ -79,16 +71,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <h1 class="auth-title">Create an account</h1>
         <p class="auth-subtitle">Start managing your campaigns with AdHub</p>
 
-        <!-- Feedback alerts -->
-        <?php if ($error): ?>
-        <div class="alert alert-danger d-flex align-items-center gap-2 mb-3" role="alert">
-            <i class="bi bi-exclamation-triangle-fill"></i>
-            <div><?= htmlspecialchars($error) ?></div>
+        <!-- Validation errors -->
+        <?php if (!empty($errors)): ?>
+        <div class="alert alert-danger mb-3">
+            <i class="bi bi-exclamation-triangle-fill me-2"></i>
+            <strong>Please fix the following:</strong>
+            <ul class="mb-0 mt-1 ps-3">
+                <?php foreach ($errors as $err): ?>
+                <li><?= e($err) ?></li>
+                <?php endforeach; ?>
+            </ul>
         </div>
         <?php endif; ?>
 
+        <!-- Success message -->
         <?php if ($success): ?>
-        <div class="alert alert-success d-flex align-items-center gap-2 mb-3" role="alert">
+        <div class="alert alert-success d-flex align-items-center gap-2 mb-3">
             <i class="bi bi-check-circle-fill"></i>
             <div><?= $success ?></div>
         </div>
@@ -97,84 +95,55 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <?php if (!$success): ?>
         <!-- Registration form -->
         <form method="POST" action="" class="needs-validation" novalidate>
+            <?= csrf_field() ?>
 
             <div class="row g-3 mb-3">
                 <div class="col-12">
                     <label class="adhub-label" for="name">Full Name *</label>
-                    <input
-                        type="text"
-                        id="name"
-                        name="name"
-                        class="form-control"
-                        placeholder="Jane Smith"
-                        value="<?= htmlspecialchars($_POST['name'] ?? '') ?>"
-                        required
-                    >
+                    <input type="text" id="name" name="name" class="form-control"
+                           placeholder="Jane Smith"
+                           value="<?= e($_POST['name'] ?? '') ?>" required>
                 </div>
 
                 <div class="col-12">
                     <label class="adhub-label" for="email">Email Address *</label>
-                    <input
-                        type="email"
-                        id="email"
-                        name="email"
-                        class="form-control"
-                        placeholder="jane@company.com"
-                        value="<?= htmlspecialchars($_POST['email'] ?? '') ?>"
-                        required
-                    >
+                    <input type="email" id="email" name="email" class="form-control"
+                           placeholder="jane@company.com"
+                           value="<?= e($_POST['email'] ?? '') ?>" required>
                 </div>
 
                 <div class="col-12">
                     <label class="adhub-label" for="company">Company / Organization</label>
-                    <input
-                        type="text"
-                        id="company"
-                        name="company"
-                        class="form-control"
-                        placeholder="Acme Corp (optional)"
-                        value="<?= htmlspecialchars($_POST['company'] ?? '') ?>"
-                    >
+                    <input type="text" id="company" name="company" class="form-control"
+                           placeholder="Acme Corp (optional)"
+                           value="<?= e($_POST['company'] ?? '') ?>">
                 </div>
 
                 <div class="col-sm-6">
                     <label class="adhub-label" for="password">Password *</label>
-                    <input
-                        type="password"
-                        id="password"
-                        name="password"
-                        class="form-control"
-                        placeholder="Min. 8 characters"
-                        required
-                        minlength="8"
-                    >
+                    <input type="password" id="password" name="password" class="form-control"
+                           placeholder="Min. 8 characters" required minlength="8">
                 </div>
 
                 <div class="col-sm-6">
                     <label class="adhub-label" for="confirm">Confirm Password *</label>
-                    <input
-                        type="password"
-                        id="confirm"
-                        name="confirm"
-                        class="form-control"
-                        placeholder="Repeat password"
-                        required
-                    >
+                    <input type="password" id="confirm" name="confirm" class="form-control"
+                           placeholder="Repeat password" required>
                 </div>
             </div>
 
             <div class="form-check mb-4">
                 <input class="form-check-input" type="checkbox" id="terms" required>
                 <label class="form-check-label small" for="terms">
-                    I agree to the <a href="#" class="text-primary">Terms of Service</a>
-                    and <a href="#" class="text-primary">Privacy Policy</a>
+                    I agree to the
+                    <a href="#" class="text-primary">Terms of Service</a> and
+                    <a href="#" class="text-primary">Privacy Policy</a>
                 </label>
             </div>
 
             <button type="submit" class="btn btn-adhub-primary w-100 py-2 mb-3">
                 <i class="bi bi-person-plus me-2"></i>Create Account
             </button>
-
         </form>
         <?php endif; ?>
 

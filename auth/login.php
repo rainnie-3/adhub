@@ -1,49 +1,35 @@
 <?php
 /**
  * AdHub - Login Page
- * Handles authentication for Admin and Client users.
+ * Uses: attempt_login(), is_logged_in(), current_role(), e()
  */
 
 session_start();
 require_once __DIR__ . '/../includes/db.php';
+require_once __DIR__ . '/../includes/functions.php';
 
 // Redirect if already logged in
-if (!empty($_SESSION['user_id'])) {
-    $redirect = $_SESSION['role'] === 'admin' ? '/adhub/admin/dashboard.php' : '/adhub/client/dashboard.php';
-    header("Location: $redirect");
-    exit;
+if (is_logged_in()) {
+    redirect(current_role() === 'admin'
+        ? '/adhub/admin/dashboard.php'
+        : '/adhub/client/dashboard.php');
 }
 
 $error = '';
 
 // ── Handle POST ──────────────────────────────────────────────────────────────
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $email    = trim($_POST['email'] ?? '');
+if (is_post()) {
+    $email    = input_str($_POST, 'email');
     $password = $_POST['password'] ?? '';
 
     if (empty($email) || empty($password)) {
         $error = 'Please enter your email and password.';
     } else {
-        $stmt = $pdo->prepare("SELECT id, name, email, password, role FROM users WHERE email = ? LIMIT 1");
-        $stmt->execute([$email]);
-        $user = $stmt->fetch();
-
-        if ($user && password_verify($password, $user['password'])) {
-            // Regenerate session ID for security
-            session_regenerate_id(true);
-
-            $_SESSION['user_id']   = $user['id'];
-            $_SESSION['user_name'] = $user['name'];
-            $_SESSION['email']     = $user['email'];
-            $_SESSION['role']      = $user['role'];
-
-            // Redirect based on role
-            $destination = $user['role'] === 'admin'
+        $user = attempt_login($pdo, $email, $password);
+        if ($user) {
+            redirect($user['role'] === 'admin'
                 ? '/adhub/admin/dashboard.php'
-                : '/adhub/client/dashboard.php';
-
-            header("Location: $destination");
-            exit;
+                : '/adhub/client/dashboard.php');
         } else {
             $error = 'Invalid email or password. Please try again.';
         }
@@ -76,23 +62,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         <!-- Error alert -->
         <?php if ($error): ?>
-        <div class="alert alert-danger alert-dismissible d-flex align-items-center gap-2 mb-3" role="alert">
-            <i class="bi bi-exclamation-triangle-fill"></i>
-            <div><?= htmlspecialchars($error) ?></div>
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-        </div>
+        <?= render_alert($error, 'danger') ?>
         <?php endif; ?>
 
-        <!-- URL error (e.g., unauthorized redirect) -->
-        <?php if (($_GET['error'] ?? '') === 'unauthorized'): ?>
-        <div class="alert alert-warning d-flex align-items-center gap-2 mb-3" role="alert">
-            <i class="bi bi-shield-exclamation"></i>
-            <div>You don't have permission to access that page.</div>
-        </div>
+        <!-- Unauthorized redirect message -->
+        <?php if (query_param('error') === 'unauthorized'): ?>
+        <?= render_alert("You don't have permission to access that page.", 'warning') ?>
         <?php endif; ?>
 
         <!-- Login form -->
         <form method="POST" action="" class="needs-validation" novalidate>
+            <?= csrf_field() ?>
 
             <div class="mb-3">
                 <label class="adhub-label" for="email">Email Address</label>
@@ -100,16 +80,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <span class="input-group-text bg-light border-end-0">
                         <i class="bi bi-envelope text-muted"></i>
                     </span>
-                    <input
-                        type="email"
-                        id="email"
-                        name="email"
-                        class="form-control border-start-0 ps-0"
-                        placeholder="you@company.com"
-                        value="<?= htmlspecialchars($_POST['email'] ?? '') ?>"
-                        required
-                        autocomplete="email"
-                    >
+                    <input type="email" id="email" name="email"
+                           class="form-control border-start-0 ps-0"
+                           placeholder="you@company.com"
+                           value="<?= e($_POST['email'] ?? '') ?>"
+                           required autocomplete="email">
                 </div>
             </div>
 
@@ -119,16 +94,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <span class="input-group-text bg-light border-end-0">
                         <i class="bi bi-lock text-muted"></i>
                     </span>
-                    <input
-                        type="password"
-                        id="password"
-                        name="password"
-                        class="form-control border-start-0 ps-0"
-                        placeholder="••••••••"
-                        required
-                        autocomplete="current-password"
-                    >
-                    <button type="button" class="input-group-text bg-light border-start-0" id="togglePwd" title="Show/hide password">
+                    <input type="password" id="password" name="password"
+                           class="form-control border-start-0 ps-0"
+                           placeholder="••••••••"
+                           required autocomplete="current-password">
+                    <button type="button" class="input-group-text bg-light border-start-0"
+                            id="togglePwd" title="Show/hide password">
                         <i class="bi bi-eye text-muted" id="togglePwdIcon"></i>
                     </button>
                 </div>
@@ -145,7 +116,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <button type="submit" class="btn btn-adhub-primary w-100 py-2 mb-3">
                 <i class="bi bi-box-arrow-in-right me-2"></i>Sign In
             </button>
-
         </form>
 
         <p class="text-center text-muted small mb-0">
@@ -153,7 +123,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <a href="/adhub/auth/register.php" class="text-primary fw-600">Create one</a>
         </p>
 
-        <!-- Demo credentials hint -->
+        <!-- Demo credentials -->
         <div class="mt-4 p-3 rounded-3" style="background:#f8f9fa;font-size:.78rem;">
             <div class="fw-600 mb-1 text-muted">Demo Credentials</div>
             <div>Admin: <code>admin@adhub.com</code> / <code>password</code></div>
@@ -166,12 +136,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <script src="/adhub/assets/js/script.js"></script>
     <script>
         // Toggle password visibility
-        const pwd     = document.getElementById('password');
+        const pwd       = document.getElementById('password');
         const toggleBtn = document.getElementById('togglePwd');
-        const icon    = document.getElementById('togglePwdIcon');
+        const icon      = document.getElementById('togglePwdIcon');
         toggleBtn?.addEventListener('click', () => {
-            const show = pwd.type === 'password';
-            pwd.type   = show ? 'text' : 'password';
+            const show  = pwd.type === 'password';
+            pwd.type    = show ? 'text' : 'password';
             icon.className = show ? 'bi bi-eye-slash text-muted' : 'bi bi-eye text-muted';
         });
     </script>

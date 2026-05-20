@@ -1,43 +1,45 @@
 <?php
 /**
  * AdHub - Header Include
- * Starts session, loads DB, and outputs HTML <head>
+ * Starts session, loads DB + functions, outputs HTML <head>.
  *
- * @param string $page_title  Title shown in <title> tag
- * @param string $user_role   'admin' or 'client' — used to gate access
+ * Set before including this file:
+ *   $page_title   (string)  — shown in <title>
+ *   $require_auth (bool)    — redirect to login if not logged in
+ *   $require_role (string)  — 'admin' or 'client' role gate
  */
 
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
+// Load DB connection
 require_once __DIR__ . '/db.php';
 
+// Load all reusable functions
+require_once __DIR__ . '/functions.php';
+
 // ── Auth guard ────────────────────────────────────────────────────────────────
-// Pages that need a logged-in user should call this before including header.php
-// OR set $require_auth = true before including.
-if (!empty($require_auth) && empty($_SESSION['user_id'])) {
-    header('Location: /adhub/auth/login.php');
-    exit;
+if (!empty($require_auth)) {
+    require_login();
 }
 
-// Role guard — set $require_role = 'admin' or 'client' before including
-if (!empty($require_role) && ($_SESSION['role'] ?? '') !== $require_role) {
-    header('Location: /adhub/auth/login.php?error=unauthorized');
-    exit;
+if (!empty($require_role)) {
+    require_role($require_role);
 }
 
+// ── Convenience variables available in every page ─────────────────────────────
 $page_title = $page_title ?? 'AdHub';
-$user_name  = $_SESSION['user_name'] ?? 'Guest';
-$user_role  = $_SESSION['role']      ?? 'guest';
-$user_id    = $_SESSION['user_id']   ?? null;
+$user_name  = current_user_name();
+$user_role  = current_role();
+$user_id    = current_user_id();
 ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><?= htmlspecialchars($page_title) ?> — AdHub</title>
+    <title><?= e($page_title) ?> — AdHub</title>
 
     <!-- Bootstrap 5 CSS CDN -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">

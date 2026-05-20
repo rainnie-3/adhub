@@ -1,47 +1,49 @@
 /* ============================================================
-   AdHub — style.css
-   Agency-Client Marketing Campaign Manager
+   AdHub — style.css  (v2 — Professional Dark Theme)
    ============================================================ */
 
-/* ── 1. CSS Variables ─────────────────────────────────────── */
+/* ── 1. CSS Variables ────────────────────────────────────── */
 :root {
-    /* Brand palette */
-    --ah-primary:       #4f46e5;   /* Indigo */
-    --ah-primary-dark:  #3730a3;
-    --ah-primary-light: #ede9fe;
-    --ah-accent:        #06b6d4;   /* Cyan */
-    --ah-success:       #10b981;
-    --ah-warning:       #f59e0b;
-    --ah-danger:        #ef4444;
-    --ah-info:          #3b82f6;
+    --ah-primary:        #6366f1;
+    --ah-primary-dark:   #4f46e5;
+    --ah-primary-light:  rgba(99,102,241,.12);
+    --ah-accent:         #06b6d4;
+    --ah-success:        #10b981;
+    --ah-warning:        #f59e0b;
+    --ah-danger:         #ef4444;
+    --ah-info:           #3b82f6;
 
-    /* Neutrals */
-    --ah-bg:            #f4f6fb;
-    --ah-surface:       #ffffff;
-    --ah-border:        #e5e7eb;
-    --ah-text:          #111827;
-    --ah-text-muted:    #6b7280;
-    --ah-text-light:    #9ca3af;
+    /* Dark theme surfaces */
+    --ah-bg:             #0f172a;
+    --ah-bg-2:           #1e293b;
+    --ah-surface:        #1e293b;
+    --ah-surface-2:      #273449;
+    --ah-border:         rgba(255,255,255,.08);
+    --ah-border-strong:  rgba(255,255,255,.15);
+
+    /* Text */
+    --ah-text:           #f1f5f9;
+    --ah-text-muted:     #94a3b8;
+    --ah-text-light:     #64748b;
 
     /* Sidebar */
-    --ah-sidebar-w:     260px;
-    --ah-sidebar-bg:    #0f172a;   /* Slate 900 */
-    --ah-sidebar-text:  #cbd5e1;
-    --ah-sidebar-active:#4f46e5;
+    --ah-sidebar-w:      260px;
+    --ah-sidebar-bg:     #0a0f1e;
+    --ah-sidebar-text:   #94a3b8;
 
     /* Layout */
-    --ah-navbar-h:      64px;
-    --ah-radius:        12px;
-    --ah-radius-sm:     8px;
-    --ah-shadow:        0 1px 3px rgba(0,0,0,.07), 0 4px 16px rgba(0,0,0,.05);
-    --ah-shadow-md:     0 4px 24px rgba(0,0,0,.10);
+    --ah-navbar-h:       64px;
+    --ah-radius:         14px;
+    --ah-radius-sm:      8px;
+    --ah-shadow:         0 1px 3px rgba(0,0,0,.4), 0 4px 20px rgba(0,0,0,.3);
+    --ah-shadow-md:      0 8px 32px rgba(0,0,0,.4);
+    --ah-glow:           0 0 20px rgba(99,102,241,.2);
 
-    /* Typography */
-    --font-body:        'Plus Jakarta Sans', sans-serif;
-    --font-heading:     'Space Grotesk', sans-serif;
+    --font-body:         'Plus Jakarta Sans', sans-serif;
+    --font-heading:      'Space Grotesk', sans-serif;
 }
 
-/* ── 2. Base Reset ────────────────────────────────────────── */
+/* ── 2. Base ─────────────────────────────────────────────── */
 *, *::before, *::after { box-sizing: border-box; }
 
 body.adhub-body {
@@ -52,20 +54,21 @@ body.adhub-body {
     min-height: 100vh;
 }
 
-h1, h2, h3, h4, h5, h6,
-.adhub-brand, .brand-text, .sidebar-brand {
-    font-family: var(--font-heading);
-}
+h1,h2,h3,h4,h5,h6,
+.adhub-brand,.brand-text,.sidebar-brand { font-family: var(--font-heading); }
 
 a { text-decoration: none; }
 
-/* ── 3. Layout Shell ──────────────────────────────────────── */
-.adhub-layout {
-    display: flex;
-    min-height: 100vh;
-}
+/* Scrollbar */
+::-webkit-scrollbar { width: 5px; height: 5px; }
+::-webkit-scrollbar-track { background: var(--ah-bg); }
+::-webkit-scrollbar-thumb { background: var(--ah-border-strong); border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: var(--ah-primary); }
 
-/* ── 4. Sidebar ───────────────────────────────────────────── */
+/* ── 3. Layout ───────────────────────────────────────────── */
+.adhub-layout { display: flex; min-height: 100vh; }
+
+/* ── 4. Sidebar ──────────────────────────────────────────── */
 .adhub-sidebar {
     width: var(--ah-sidebar-w);
     background: var(--ah-sidebar-bg);
@@ -77,128 +80,129 @@ a { text-decoration: none; }
     z-index: 1040;
     transition: transform .25s ease, width .25s ease;
     overflow-x: hidden;
+    border-right: 1px solid var(--ah-border);
 }
 
-.adhub-sidebar.collapsed {
-    width: 72px;
-}
+.adhub-sidebar.collapsed { width: 72px; }
 
-/* Sidebar brand */
 .sidebar-brand {
     display: flex;
     align-items: center;
-    gap: 12px;
-    padding: 20px 20px 12px;
-    border-bottom: 1px solid rgba(255,255,255,.06);
-    min-height: var(--ah-navbar-h);
+    padding: 0 20px;
+    height: var(--ah-navbar-h);
+    border-bottom: 1px solid var(--ah-border);
+    flex-shrink: 0;
 }
+
+.sidebar-brand a { display: flex; align-items: center; gap: 10px; }
 
 .brand-icon-lg {
     font-size: 1.6rem;
     color: var(--ah-primary);
     flex-shrink: 0;
-    line-height: 1;
+    filter: drop-shadow(0 0 8px rgba(99,102,241,.5));
 }
 
 .brand-text {
-    font-size: 1.25rem;
+    font-size: 1.2rem;
     font-weight: 700;
-    color: #fff;
+    color: var(--ah-text);
     white-space: nowrap;
     letter-spacing: -.02em;
-    transition: opacity .2s;
+    transition: opacity .2s, width .2s;
 }
 
+/* Collapse hides text */
 .adhub-sidebar.collapsed .brand-text,
 .adhub-sidebar.collapsed .nav-section-label,
 .adhub-sidebar.collapsed .sidebar-role-badge,
-.adhub-sidebar.collapsed .sidebar-footer .nav-link-item span,
 .adhub-sidebar.collapsed .nav-link-item span,
-.adhub-sidebar.collapsed .nav-badge { opacity: 0; pointer-events: none; width: 0; overflow: hidden; }
+.adhub-sidebar.collapsed .nav-badge {
+    opacity: 0; pointer-events: none; width: 0; overflow: hidden;
+}
 
-/* Role badge */
 .sidebar-role-badge {
-    padding: 10px 20px 6px;
+    padding: 12px 16px 4px;
     transition: opacity .2s;
 }
 
-/* Nav sections */
 .sidebar-nav {
     flex: 1;
-    padding: 8px 12px;
+    padding: 8px 10px;
     overflow-y: auto;
     overflow-x: hidden;
 }
 
 .nav-section-label {
-    font-size: .65rem;
+    font-size: .6rem;
     font-weight: 700;
-    letter-spacing: .1em;
+    letter-spacing: .12em;
     text-transform: uppercase;
     color: var(--ah-text-light);
-    padding: 14px 8px 4px;
+    padding: 16px 8px 5px;
     white-space: nowrap;
     transition: opacity .2s;
 }
 
-/* Nav items */
 .nav-link-item {
     display: flex;
     align-items: center;
-    gap: 12px;
+    gap: 11px;
     padding: 9px 12px;
     border-radius: var(--ah-radius-sm);
     color: var(--ah-sidebar-text);
-    font-size: .875rem;
+    font-size: .855rem;
     font-weight: 500;
     transition: background .15s, color .15s;
     cursor: pointer;
     white-space: nowrap;
     margin-bottom: 2px;
+    position: relative;
 }
 
 .nav-link-item i {
-    font-size: 1.1rem;
+    font-size: 1.05rem;
     flex-shrink: 0;
     width: 20px;
     text-align: center;
 }
 
 .nav-link-item:hover {
-    background: rgba(255,255,255,.07);
-    color: #fff;
+    background: rgba(255,255,255,.06);
+    color: var(--ah-text);
 }
 
 .nav-link-item.active {
-    background: var(--ah-primary);
-    color: #fff;
-    box-shadow: 0 4px 12px rgba(79,70,229,.35);
+    background: var(--ah-primary-light);
+    color: var(--ah-primary);
+    font-weight: 600;
 }
 
-.nav-link-item.text-danger-soft { color: #fca5a5; }
-.nav-link-item.text-danger-soft:hover { background: rgba(239,68,68,.15); color: #ef4444; }
+.nav-link-item.active i { color: var(--ah-primary); }
 
-/* Nav badge */
+.nav-link-item.text-danger-soft { color: #fca5a5; }
+.nav-link-item.text-danger-soft:hover { background: rgba(239,68,68,.12); color: #ef4444; }
+
 .nav-badge {
     margin-left: auto;
-    background: rgba(255,255,255,.15);
-    color: #fff;
-    font-size: .65rem;
+    background: rgba(255,255,255,.1);
+    color: var(--ah-text);
+    font-size: .62rem;
     font-weight: 700;
     padding: 2px 7px;
     border-radius: 20px;
-    transition: opacity .2s;
+    flex-shrink: 0;
 }
 
 .nav-badge.pending { background: var(--ah-warning); color: #000; }
 
-/* Sidebar footer */
 .sidebar-footer {
-    padding: 12px;
-    border-top: 1px solid rgba(255,255,255,.06);
+    padding: 10px;
+    border-top: 1px solid var(--ah-border);
+    flex-shrink: 0;
 }
 
-/* ── 5. Main content area ─────────────────────────────────── */
+/* ── 5. Content Wrapper ──────────────────────────────────── */
 .adhub-content-wrapper {
     flex: 1;
     margin-left: var(--ah-sidebar-w);
@@ -206,13 +210,12 @@ a { text-decoration: none; }
     flex-direction: column;
     min-height: 100vh;
     transition: margin-left .25s ease;
+    background: var(--ah-bg);
 }
 
-.adhub-content-wrapper.sidebar-collapsed {
-    margin-left: 72px;
-}
+.adhub-content-wrapper.sidebar-collapsed { margin-left: 72px; }
 
-/* ── 6. Top Navbar ────────────────────────────────────────── */
+/* ── 6. Navbar ───────────────────────────────────────────── */
 .adhub-navbar {
     height: var(--ah-navbar-h);
     background: var(--ah-surface);
@@ -224,31 +227,29 @@ a { text-decoration: none; }
     padding: 0;
 }
 
-.adhub-brand {
-    font-size: 1.1rem;
-    font-weight: 700;
-    color: var(--ah-primary);
-}
-
+.adhub-brand { font-size: 1.1rem; font-weight: 700; color: var(--ah-primary); }
 .brand-icon { font-size: 1.2rem; }
 
-/* Sidebar toggle */
-.sidebar-toggle {
-    color: var(--ah-text-muted);
-    transition: color .15s;
-}
+.sidebar-toggle { color: var(--ah-text-muted); transition: color .15s; }
 .sidebar-toggle:hover { color: var(--ah-primary); }
 
-/* Search bar */
+/* Search */
 .adhub-search {
+    position: relative;
     display: flex;
     align-items: center;
     gap: 8px;
-    background: var(--ah-bg);
+    background: var(--ah-bg-2);
     border: 1px solid var(--ah-border);
     border-radius: 50px;
-    padding: 6px 16px;
+    padding: 7px 16px;
     color: var(--ah-text-muted);
+    transition: border-color .2s;
+}
+
+.adhub-search:focus-within {
+    border-color: var(--ah-primary);
+    box-shadow: 0 0 0 3px var(--ah-primary-light);
 }
 
 .adhub-search-input {
@@ -257,35 +258,80 @@ a { text-decoration: none; }
     outline: none;
     font-size: .875rem;
     font-family: var(--font-body);
-    width: 200px;
+    width: 220px;
     color: var(--ah-text);
 }
 
 .adhub-search-input::placeholder { color: var(--ah-text-light); }
 
-/* Nav icon button */
-.nav-icon-btn {
-    color: var(--ah-text-muted);
-    position: relative;
-    padding: 6px;
+/* Search results dropdown */
+.search-results-dropdown {
+    position: absolute;
+    top: calc(100% + 8px);
+    left: 0; right: 0;
+    background: var(--ah-surface-2);
+    border: 1px solid var(--ah-border-strong);
+    border-radius: var(--ah-radius);
+    box-shadow: var(--ah-shadow-md);
+    z-index: 9999;
+    overflow: hidden;
+    min-width: 360px;
 }
 
+.search-result-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 14px;
+    cursor: pointer;
+    border-bottom: 1px solid var(--ah-border);
+    transition: background .15s;
+    text-decoration: none;
+    color: var(--ah-text);
+}
+
+.search-result-item:last-child { border-bottom: none; }
+.search-result-item:hover { background: rgba(255,255,255,.05); }
+
+.search-result-icon {
+    width: 34px; height: 34px;
+    border-radius: 8px;
+    background: var(--ah-primary-light);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+    flex-shrink: 0;
+}
+
+.search-result-type {
+    font-size: .65rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .08em;
+    color: var(--ah-text-light);
+}
+
+.search-result-title { font-size: .85rem; font-weight: 600; }
+.search-result-sub   { font-size: .75rem; color: var(--ah-text-muted); }
+.search-no-results   { padding: 16px; text-align: center; color: var(--ah-text-muted); font-size: .85rem; }
+
+/* Nav icon btn */
+.nav-icon-btn { color: var(--ah-text-muted); position: relative; padding: 6px; }
 .nav-icon-btn:hover { color: var(--ah-primary); }
 
-/* Notification dot */
 .badge-dot {
     position: absolute;
     top: 5px; right: 5px;
     width: 8px; height: 8px;
     background: var(--ah-danger);
     border-radius: 50%;
-    border: 2px solid #fff;
+    border: 2px solid var(--ah-surface);
 }
 
-/* User avatar */
+/* Avatar */
 .adhub-avatar {
-    width: 36px;
-    height: 36px;
+    width: 36px; height: 36px;
     border-radius: 50%;
     background: linear-gradient(135deg, var(--ah-primary), var(--ah-accent));
     color: #fff;
@@ -298,50 +344,35 @@ a { text-decoration: none; }
 }
 
 .nav-user-btn { text-decoration: none; color: inherit; }
-
-.user-name-nav {
-    font-size: .875rem;
-    font-weight: 600;
-    line-height: 1.2;
-    color: var(--ah-text);
-}
-
-.user-role-nav {
-    font-size: .7rem;
-    color: var(--ah-text-muted);
-    text-transform: capitalize;
-}
+.user-name-nav { font-size: .875rem; font-weight: 600; line-height: 1.2; color: var(--ah-text); }
+.user-role-nav { font-size: .7rem; color: var(--ah-text-muted); text-transform: capitalize; }
 
 /* Dropdowns */
 .adhub-dropdown {
-    border: 1px solid var(--ah-border);
-    border-radius: var(--ah-radius);
+    background: var(--ah-surface-2) !important;
+    border: 1px solid var(--ah-border-strong) !important;
+    border-radius: var(--ah-radius) !important;
     padding: 6px;
     font-size: .875rem;
+    box-shadow: var(--ah-shadow-md) !important;
 }
 
 .adhub-dropdown .dropdown-item {
     border-radius: var(--ah-radius-sm);
     padding: 8px 12px;
-    color: var(--ah-text);
+    color: var(--ah-text) !important;
     transition: background .15s;
 }
 
-.adhub-dropdown .dropdown-item:hover { background: var(--ah-bg); }
-.adhub-dropdown .dropdown-item.text-danger:hover { background: #fef2f2; }
+.adhub-dropdown .dropdown-item:hover { background: rgba(255,255,255,.07) !important; }
+.adhub-dropdown .dropdown-item.text-danger { color: #fca5a5 !important; }
+.adhub-dropdown .dropdown-item.text-danger:hover { background: rgba(239,68,68,.12) !important; }
 
-.dropdown-header {
-    font-size: .8rem;
-    font-weight: 600;
-    color: var(--ah-text);
-}
+.dropdown-header { font-size: .8rem; font-weight: 600; color: var(--ah-text); }
+.dropdown-divider { border-color: var(--ah-border) !important; }
 
 /* Notification items */
-.notification-item {
-    display: flex !important;
-    align-items: center;
-    gap: 12px;
-}
+.notification-item { display: flex !important; align-items: center; gap: 12px; }
 
 .notif-icon {
     width: 36px; height: 36px;
@@ -353,26 +384,21 @@ a { text-decoration: none; }
 }
 
 .bg-primary-soft { background: var(--ah-primary-light); }
-.bg-warning-soft { background: #fffbeb; }
-.bg-success-soft { background: #d1fae5; }
-
+.bg-warning-soft { background: rgba(245,158,11,.15); }
+.bg-success-soft { background: rgba(16,185,129,.15); }
 .notif-title { font-size: .8rem; font-weight: 600; }
 .notif-time  { font-size: .7rem; color: var(--ah-text-muted); }
 
-/* ── 7. Main page area ────────────────────────────────────── */
-.adhub-main {
-    flex: 1;
-    padding: 28px 28px 20px;
-}
+/* ── 7. Main ─────────────────────────────────────────────── */
+.adhub-main { flex: 1; padding: 28px 28px 20px; }
 
-/* Page header */
 .page-header {
     display: flex;
     align-items: flex-start;
     justify-content: space-between;
     flex-wrap: wrap;
     gap: 12px;
-    margin-bottom: 24px;
+    margin-bottom: 28px;
 }
 
 .page-title {
@@ -383,47 +409,44 @@ a { text-decoration: none; }
     margin: 0;
 }
 
-.page-subtitle {
-    font-size: .875rem;
-    color: var(--ah-text-muted);
-    margin: 2px 0 0;
-}
+.page-subtitle { font-size: .875rem; color: var(--ah-text-muted); margin: 4px 0 0; }
 
-/* ── 8. Stat Cards ────────────────────────────────────────── */
+/* ── 8. Stat Cards ───────────────────────────────────────── */
 .stat-card {
     background: var(--ah-surface);
     border-radius: var(--ah-radius);
     border: 1px solid var(--ah-border);
-    padding: 22px;
+    padding: 20px;
     display: flex;
     align-items: center;
     gap: 16px;
     box-shadow: var(--ah-shadow);
-    transition: box-shadow .2s, transform .2s;
+    transition: box-shadow .2s, transform .2s, border-color .2s;
     height: 100%;
 }
 
 .stat-card:hover {
     box-shadow: var(--ah-shadow-md);
     transform: translateY(-2px);
+    border-color: var(--ah-border-strong);
 }
 
 .stat-icon {
-    width: 52px; height: 52px;
-    border-radius: var(--ah-radius);
+    width: 50px; height: 50px;
+    border-radius: 12px;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 1.4rem;
+    font-size: 1.35rem;
     flex-shrink: 0;
 }
 
-.stat-icon.indigo  { background: var(--ah-primary-light); color: var(--ah-primary); }
-.stat-icon.cyan    { background: #cffafe; color: #0891b2; }
-.stat-icon.green   { background: #d1fae5; color: var(--ah-success); }
-.stat-icon.amber   { background: #fef3c7; color: var(--ah-warning); }
-.stat-icon.red     { background: #fee2e2; color: var(--ah-danger); }
-.stat-icon.blue    { background: #dbeafe; color: var(--ah-info); }
+.stat-icon.indigo { background: var(--ah-primary-light); color: var(--ah-primary); }
+.stat-icon.cyan   { background: rgba(6,182,212,.15);    color: #06b6d4; }
+.stat-icon.green  { background: rgba(16,185,129,.15);   color: var(--ah-success); }
+.stat-icon.amber  { background: rgba(245,158,11,.15);   color: var(--ah-warning); }
+.stat-icon.red    { background: rgba(239,68,68,.15);    color: var(--ah-danger); }
+.stat-icon.blue   { background: rgba(59,130,246,.15);   color: var(--ah-info); }
 
 .stat-value {
     font-family: var(--font-heading);
@@ -433,22 +456,13 @@ a { text-decoration: none; }
     color: var(--ah-text);
 }
 
-.stat-label {
-    font-size: .8rem;
-    color: var(--ah-text-muted);
-    margin-top: 3px;
-}
+.stat-label { font-size: .8rem; color: var(--ah-text-muted); margin-top: 4px; }
 
-.stat-change {
-    font-size: .75rem;
-    font-weight: 600;
-    margin-top: 4px;
-}
-
+.stat-change { font-size: .75rem; font-weight: 600; margin-top: 5px; }
 .stat-change.up   { color: var(--ah-success); }
 .stat-change.down { color: var(--ah-danger); }
 
-/* ── 9. Cards ─────────────────────────────────────────────── */
+/* ── 9. Cards ────────────────────────────────────────────── */
 .adhub-card {
     background: var(--ah-surface);
     border: 1px solid var(--ah-border);
@@ -463,6 +477,8 @@ a { text-decoration: none; }
     display: flex;
     align-items: center;
     justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 8px;
 }
 
 .adhub-card .card-title {
@@ -470,11 +486,12 @@ a { text-decoration: none; }
     font-size: .95rem;
     font-weight: 600;
     margin: 0;
+    color: var(--ah-text);
 }
 
 .adhub-card .card-body { padding: 20px; }
 
-/* ── 10. Tables ───────────────────────────────────────────── */
+/* ── 10. Tables ──────────────────────────────────────────── */
 .adhub-table {
     width: 100%;
     border-collapse: separate;
@@ -482,121 +499,217 @@ a { text-decoration: none; }
 }
 
 .adhub-table thead th {
-    font-size: .7rem;
+    font-size: .68rem;
     font-weight: 700;
     text-transform: uppercase;
-    letter-spacing: .06em;
+    letter-spacing: .07em;
     color: var(--ah-text-muted);
-    padding: 10px 14px;
-    background: var(--ah-bg);
+    padding: 10px 16px;
+    background: rgba(255,255,255,.03);
     border-bottom: 1px solid var(--ah-border);
     white-space: nowrap;
 }
 
 .adhub-table tbody td {
-    padding: 12px 14px;
+    padding: 13px 16px;
     border-bottom: 1px solid var(--ah-border);
     font-size: .875rem;
     vertical-align: middle;
+    color: var(--ah-text);
 }
 
 .adhub-table tbody tr:last-child td { border-bottom: none; }
+.adhub-table tbody tr:hover { background: rgba(255,255,255,.03); }
 
-.adhub-table tbody tr:hover { background: var(--ah-bg); }
+/* ── 11. Action buttons (FIXED layout) ───────────────────── */
+.action-btns {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-wrap: nowrap;
+}
 
-/* ── 11. Badges ───────────────────────────────────────────── */
+.action-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    border: 1px solid var(--ah-border-strong);
+    background: var(--ah-surface-2);
+    color: var(--ah-text-muted);
+    font-size: .85rem;
+    transition: all .15s;
+    cursor: pointer;
+    text-decoration: none;
+    flex-shrink: 0;
+}
+
+.action-btn:hover        { background: rgba(255,255,255,.1); color: var(--ah-text); border-color: var(--ah-border-strong); }
+.action-btn.edit:hover   { background: var(--ah-primary-light); color: var(--ah-primary); border-color: var(--ah-primary); }
+.action-btn.delete:hover { background: rgba(239,68,68,.15);    color: var(--ah-danger);  border-color: var(--ah-danger); }
+.action-btn.view:hover   { background: rgba(6,182,212,.12);    color: var(--ah-accent);  border-color: var(--ah-accent); }
+.action-btn.download:hover { background: rgba(16,185,129,.12); color: var(--ah-success); border-color: var(--ah-success); }
+
+/* ── 12. Badges ──────────────────────────────────────────── */
 .adhub-badge {
     display: inline-flex;
     align-items: center;
-    gap: 4px;
+    gap: 5px;
     padding: 3px 10px;
     border-radius: 20px;
-    font-size: .7rem;
-    font-weight: 600;
-    letter-spacing: .02em;
+    font-size: .68rem;
+    font-weight: 700;
+    letter-spacing: .03em;
+    white-space: nowrap;
 }
 
 .adhub-badge::before {
     content: '';
-    width: 6px;
-    height: 6px;
+    width: 5px; height: 5px;
     border-radius: 50%;
     background: currentColor;
+    flex-shrink: 0;
 }
 
-.badge-active    { background: #d1fae5; color: #065f46; }
-.badge-draft     { background: #f3f4f6; color: #374151; }
-.badge-review    { background: #fef3c7; color: #92400e; }
-.badge-completed { background: #dbeafe; color: #1e40af; }
-.badge-paused    { background: #ede9fe; color: #5b21b6; }
-.badge-pending   { background: #fef3c7; color: #92400e; }
-.badge-approved  { background: #d1fae5; color: #065f46; }
-.badge-revision  { background: #fee2e2; color: #991b1b; }
+.badge-active    { background: rgba(16,185,129,.15); color: #34d399; }
+.badge-draft     { background: rgba(100,116,139,.15); color: #94a3b8; }
+.badge-review    { background: rgba(245,158,11,.15); color: #fbbf24; }
+.badge-completed { background: rgba(59,130,246,.15); color: #60a5fa; }
+.badge-paused    { background: rgba(139,92,246,.15); color: #a78bfa; }
+.badge-pending   { background: rgba(245,158,11,.15); color: #fbbf24; }
+.badge-approved  { background: rgba(16,185,129,.15); color: #34d399; }
+.badge-revision  { background: rgba(239,68,68,.15);  color: #f87171; }
 
-/* ── 12. Progress Bars ────────────────────────────────────── */
+/* ── 13. Progress Bars ───────────────────────────────────── */
 .adhub-progress {
     height: 6px;
-    border-radius: 3px;
-    background: var(--ah-bg);
+    border-radius: 4px;
+    background: rgba(255,255,255,.08);
     overflow: hidden;
 }
 
 .adhub-progress-bar {
     height: 100%;
-    border-radius: 3px;
+    border-radius: 4px;
     background: linear-gradient(90deg, var(--ah-primary), var(--ah-accent));
     transition: width .6s ease;
 }
 
-/* ── 13. Buttons ──────────────────────────────────────────── */
+/* ── 14. Buttons ─────────────────────────────────────────── */
 .btn-adhub-primary {
     background: var(--ah-primary);
     border-color: var(--ah-primary);
     color: #fff;
     font-weight: 600;
     border-radius: var(--ah-radius-sm);
-    padding: 8px 18px;
+    padding: 8px 20px;
     font-size: .875rem;
-    transition: background .15s, box-shadow .15s;
+    transition: background .15s, box-shadow .15s, transform .1s;
 }
 
 .btn-adhub-primary:hover {
     background: var(--ah-primary-dark);
     border-color: var(--ah-primary-dark);
     color: #fff;
-    box-shadow: 0 4px 12px rgba(79,70,229,.3);
+    box-shadow: var(--ah-glow);
+    transform: translateY(-1px);
 }
 
-/* ── 14. Forms ────────────────────────────────────────────── */
-.adhub-input {
-    border: 1px solid var(--ah-border);
-    border-radius: var(--ah-radius-sm);
-    padding: 9px 14px;
-    font-size: .875rem;
+/* Override Bootstrap button colors for dark theme */
+.btn-outline-primary  { color: var(--ah-primary); border-color: var(--ah-primary); }
+.btn-outline-primary:hover { background: var(--ah-primary); color: #fff; }
+.btn-outline-secondary { color: var(--ah-text-muted); border-color: var(--ah-border-strong); }
+.btn-outline-secondary:hover { background: var(--ah-surface-2); color: var(--ah-text); border-color: var(--ah-border-strong); }
+.btn-outline-danger   { color: var(--ah-danger); border-color: var(--ah-danger); }
+.btn-outline-danger:hover { background: var(--ah-danger); color: #fff; }
+.btn-outline-success  { color: var(--ah-success); border-color: var(--ah-success); }
+.btn-outline-success:hover { background: var(--ah-success); color: #fff; }
+.btn-outline-info     { color: var(--ah-accent); border-color: var(--ah-accent); }
+.btn-outline-info:hover { background: var(--ah-accent); color: #fff; }
+.btn-light { background: var(--ah-surface-2); border-color: var(--ah-border-strong); color: var(--ah-text); }
+.btn-light:hover { background: rgba(255,255,255,.1); color: var(--ah-text); }
+
+/* ── 15. Forms ───────────────────────────────────────────── */
+.form-control, .form-select {
+    background: var(--ah-bg-2) !important;
+    border: 1px solid var(--ah-border-strong) !important;
+    color: var(--ah-text) !important;
+    border-radius: var(--ah-radius-sm) !important;
     font-family: var(--font-body);
-    color: var(--ah-text);
-    transition: border-color .15s, box-shadow .15s;
-    background: var(--ah-surface);
-    width: 100%;
 }
 
-.adhub-input:focus {
-    border-color: var(--ah-primary);
-    box-shadow: 0 0 0 3px rgba(79,70,229,.12);
-    outline: none;
+.form-control:focus, .form-select:focus {
+    border-color: var(--ah-primary) !important;
+    box-shadow: 0 0 0 3px var(--ah-primary-light) !important;
+    background: var(--ah-bg-2) !important;
+    color: var(--ah-text) !important;
 }
+
+.form-control::placeholder { color: var(--ah-text-light) !important; }
+.form-control:disabled { background: var(--ah-bg) !important; color: var(--ah-text-muted) !important; }
+
+.input-group-text {
+    background: var(--ah-bg-2) !important;
+    border-color: var(--ah-border-strong) !important;
+    color: var(--ah-text-muted) !important;
+}
+
+.form-range { accent-color: var(--ah-primary); }
+
+.form-check-input {
+    background-color: var(--ah-bg-2);
+    border-color: var(--ah-border-strong);
+}
+.form-check-input:checked { background-color: var(--ah-primary); border-color: var(--ah-primary); }
+
+.form-switch .form-check-input { background-color: var(--ah-surface-2); }
+.form-switch .form-check-input:checked { background-color: var(--ah-primary); }
 
 .adhub-label {
-    font-size: .8rem;
-    font-weight: 600;
+    font-size: .75rem;
+    font-weight: 700;
     color: var(--ah-text-muted);
     text-transform: uppercase;
-    letter-spacing: .04em;
-    margin-bottom: 5px;
+    letter-spacing: .06em;
+    margin-bottom: 6px;
     display: block;
 }
 
-/* ── 15. Footer ───────────────────────────────────────────── */
+.form-text { color: var(--ah-text-light); font-size: .75rem; }
+
+/* ── 16. Modals ──────────────────────────────────────────── */
+.modal-content {
+    background: var(--ah-surface) !important;
+    border: 1px solid var(--ah-border-strong) !important;
+    color: var(--ah-text) !important;
+}
+
+.modal-header, .modal-footer {
+    border-color: var(--ah-border) !important;
+}
+
+.modal-title { color: var(--ah-text) !important; }
+.btn-close { filter: invert(1) grayscale(1); }
+
+/* ── 17. Alerts ──────────────────────────────────────────── */
+.alert {
+    border-radius: var(--ah-radius-sm);
+    border: none;
+    font-size: .875rem;
+}
+
+.alert-success { background: rgba(16,185,129,.15); color: #34d399; }
+.alert-danger   { background: rgba(239,68,68,.15);  color: #f87171; }
+.alert-warning  { background: rgba(245,158,11,.15); color: #fbbf24; }
+.alert-info     { background: rgba(59,130,246,.15); color: #60a5fa; }
+
+.alert .btn-close { filter: none; opacity: .6; }
+.alert-success .btn-close, .alert-danger .btn-close,
+.alert-warning .btn-close, .alert-info .btn-close { filter: invert(1); }
+
+/* ── 18. Footer ──────────────────────────────────────────── */
 .adhub-footer {
     background: var(--ah-surface);
     border-top: 1px solid var(--ah-border);
@@ -609,65 +722,42 @@ a { text-decoration: none; }
 
 .adhub-footer.sidebar-collapsed { margin-left: 72px; }
 
-/* ── 16. Auth Pages ───────────────────────────────────────── */
+/* ── 19. Auth Pages ──────────────────────────────────────── */
 .auth-page {
     min-height: 100vh;
     display: flex;
     align-items: center;
     justify-content: center;
-    background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #0f172a 100%);
+    background: radial-gradient(ellipse at top left, #1e1b4b 0%, #0f172a 50%, #0a0f1e 100%);
     padding: 20px;
 }
 
 .auth-card {
-    background: #fff;
+    background: var(--ah-surface);
+    border: 1px solid var(--ah-border-strong);
     border-radius: 20px;
     padding: 40px;
     width: 100%;
     max-width: 440px;
-    box-shadow: 0 25px 60px rgba(0,0,0,.3);
+    box-shadow: 0 30px 80px rgba(0,0,0,.5);
 }
 
-.auth-logo {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    margin-bottom: 28px;
-}
+.auth-logo { display: flex; align-items: center; gap: 12px; margin-bottom: 28px; }
+.auth-logo-icon { font-size: 2rem; color: var(--ah-primary); }
+.auth-logo-text { font-family: var(--font-heading); font-size: 1.5rem; font-weight: 700; color: var(--ah-text); }
+.auth-title { font-family: var(--font-heading); font-size: 1.4rem; font-weight: 700; margin-bottom: 4px; color: var(--ah-text); }
+.auth-subtitle { color: var(--ah-text-muted); font-size: .875rem; margin-bottom: 24px; }
 
-.auth-logo-icon {
-    font-size: 2rem;
-    color: var(--ah-primary);
-}
-
-.auth-logo-text {
-    font-family: var(--font-heading);
-    font-size: 1.5rem;
-    font-weight: 700;
-    color: var(--ah-text);
-}
-
-.auth-title {
-    font-family: var(--font-heading);
-    font-size: 1.4rem;
-    font-weight: 700;
-    margin-bottom: 4px;
-}
-
-.auth-subtitle {
-    color: var(--ah-text-muted);
-    font-size: .875rem;
-    margin-bottom: 24px;
-}
-
-/* ── 17. Upload Zone ──────────────────────────────────────── */
+/* ── 20. Upload Zone (FIXED) ─────────────────────────────── */
 .upload-zone {
-    border: 2px dashed var(--ah-border);
+    border: 2px dashed var(--ah-border-strong);
     border-radius: var(--ah-radius);
-    padding: 40px;
+    padding: 40px 20px;
     text-align: center;
     cursor: pointer;
     transition: border-color .2s, background .2s;
+    position: relative;
+    user-select: none;
 }
 
 .upload-zone:hover,
@@ -676,52 +766,104 @@ a { text-decoration: none; }
     background: var(--ah-primary-light);
 }
 
-.upload-zone i { font-size: 2.5rem; color: var(--ah-text-light); margin-bottom: 12px; }
-
-/* ── 18. Utility helpers ──────────────────────────────────── */
-.fw-600 { font-weight: 600; }
-
-.text-primary-adhub { color: var(--ah-primary); }
-
-.bg-adhub-light { background: var(--ah-bg); }
-
-.rounded-adhub { border-radius: var(--ah-radius); }
-
-/* ── 19. Responsive ───────────────────────────────────────── */
-@media (max-width: 991.98px) {
-    .adhub-sidebar {
-        transform: translateX(-100%);
-    }
-
-    .adhub-sidebar.mobile-open {
-        transform: translateX(0);
-    }
-
-    .adhub-content-wrapper {
-        margin-left: 0 !important;
-    }
-
-    .adhub-footer {
-        margin-left: 0 !important;
-    }
-
-    .sidebar-overlay {
-        display: block !important;
-    }
+/* Hidden file input sits over the zone */
+.upload-zone input[type="file"] {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    cursor: pointer;
+    width: 100%;
+    height: 100%;
+    z-index: 2;
 }
 
-/* Sidebar overlay for mobile */
+.upload-zone-icon {
+    font-size: 2.5rem;
+    color: var(--ah-text-light);
+    margin-bottom: 12px;
+    display: block;
+    pointer-events: none;
+}
+
+.upload-zone-label {
+    font-weight: 600;
+    color: var(--ah-text);
+    margin-bottom: 4px;
+    pointer-events: none;
+}
+
+.upload-zone-hint {
+    font-size: .8rem;
+    color: var(--ah-text-muted);
+    pointer-events: none;
+}
+
+.upload-zone.has-file {
+    border-color: var(--ah-success);
+    background: rgba(16,185,129,.08);
+}
+
+.upload-zone.has-file .upload-zone-icon { color: var(--ah-success); }
+
+/* ── 21. List groups ─────────────────────────────────────── */
+.list-group-item {
+    background: transparent !important;
+    border-color: var(--ah-border) !important;
+    color: var(--ah-text) !important;
+}
+
+/* ── 22. Badges (Bootstrap override) ────────────────────── */
+.badge.bg-secondary { background: var(--ah-surface-2) !important; color: var(--ah-text-muted) !important; border: 1px solid var(--ah-border-strong); }
+.badge.bg-light { background: var(--ah-surface-2) !important; color: var(--ah-text-muted) !important; }
+
+/* ── 23. Utility ─────────────────────────────────────────── */
+.fw-600 { font-weight: 600; }
+.fw-700 { font-weight: 700; }
+.text-primary-adhub { color: var(--ah-primary); }
+
+/* Campaign card hover link */
+.adhub-card a.d-flex:hover { background: rgba(255,255,255,.04); border-radius: var(--ah-radius-sm); }
+
+/* Approval pending highlight */
+.approval-pending-card { border-left: 3px solid var(--ah-warning) !important; }
+
+/* Code blocks in demo hints */
+code {
+    background: var(--ah-bg-2);
+    border: 1px solid var(--ah-border);
+    border-radius: 4px;
+    padding: 1px 6px;
+    font-size: .8rem;
+    color: var(--ah-accent);
+}
+
+/* ── 24. Sidebar overlay ─────────────────────────────────── */
 .sidebar-overlay {
     display: none;
     position: fixed;
     inset: 0;
-    background: rgba(0,0,0,.4);
+    background: rgba(0,0,0,.6);
     z-index: 1039;
-    backdrop-filter: blur(2px);
+    backdrop-filter: blur(4px);
+}
+
+/* ── 25. Responsive ──────────────────────────────────────── */
+@media (max-width: 991.98px) {
+    .adhub-sidebar { transform: translateX(-100%); }
+    .adhub-sidebar.mobile-open { transform: translateX(0); }
+    .adhub-content-wrapper { margin-left: 0 !important; }
+    .adhub-footer { margin-left: 0 !important; }
+    .sidebar-overlay { display: block !important; visibility: hidden; pointer-events: none; }
+    .sidebar-overlay.active { visibility: visible; pointer-events: auto; }
+}
+
+@media (max-width: 767.98px) {
+    .adhub-main { padding: 16px; }
+    .adhub-search { display: none !important; }
 }
 
 @media (max-width: 575.98px) {
-    .adhub-main { padding: 16px; }
     .page-header { flex-direction: column; }
     .stat-value { font-size: 1.3rem; }
+    .auth-card { padding: 28px 20px; }
 }
