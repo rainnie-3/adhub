@@ -1,0 +1,727 @@
+/* ============================================================
+   AdHub — style.css
+   Agency-Client Marketing Campaign Manager
+   ============================================================ */
+
+/* ── 1. CSS Variables ─────────────────────────────────────── */
+:root {
+    /* Brand palette */
+    --ah-primary:       #4f46e5;   /* Indigo */
+    --ah-primary-dark:  #3730a3;
+    --ah-primary-light: #ede9fe;
+    --ah-accent:        #06b6d4;   /* Cyan */
+    --ah-success:       #10b981;
+    --ah-warning:       #f59e0b;
+    --ah-danger:        #ef4444;
+    --ah-info:          #3b82f6;
+
+    /* Neutrals */
+    --ah-bg:            #f4f6fb;
+    --ah-surface:       #ffffff;
+    --ah-border:        #e5e7eb;
+    --ah-text:          #111827;
+    --ah-text-muted:    #6b7280;
+    --ah-text-light:    #9ca3af;
+
+    /* Sidebar */
+    --ah-sidebar-w:     260px;
+    --ah-sidebar-bg:    #0f172a;   /* Slate 900 */
+    --ah-sidebar-text:  #cbd5e1;
+    --ah-sidebar-active:#4f46e5;
+
+    /* Layout */
+    --ah-navbar-h:      64px;
+    --ah-radius:        12px;
+    --ah-radius-sm:     8px;
+    --ah-shadow:        0 1px 3px rgba(0,0,0,.07), 0 4px 16px rgba(0,0,0,.05);
+    --ah-shadow-md:     0 4px 24px rgba(0,0,0,.10);
+
+    /* Typography */
+    --font-body:        'Plus Jakarta Sans', sans-serif;
+    --font-heading:     'Space Grotesk', sans-serif;
+}
+
+/* ── 2. Base Reset ────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; }
+
+body.adhub-body {
+    font-family: var(--font-body);
+    background: var(--ah-bg);
+    color: var(--ah-text);
+    margin: 0;
+    min-height: 100vh;
+}
+
+h1, h2, h3, h4, h5, h6,
+.adhub-brand, .brand-text, .sidebar-brand {
+    font-family: var(--font-heading);
+}
+
+a { text-decoration: none; }
+
+/* ── 3. Layout Shell ──────────────────────────────────────── */
+.adhub-layout {
+    display: flex;
+    min-height: 100vh;
+}
+
+/* ── 4. Sidebar ───────────────────────────────────────────── */
+.adhub-sidebar {
+    width: var(--ah-sidebar-w);
+    background: var(--ah-sidebar-bg);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    position: fixed;
+    top: 0; left: 0;
+    z-index: 1040;
+    transition: transform .25s ease, width .25s ease;
+    overflow-x: hidden;
+}
+
+.adhub-sidebar.collapsed {
+    width: 72px;
+}
+
+/* Sidebar brand */
+.sidebar-brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 20px 20px 12px;
+    border-bottom: 1px solid rgba(255,255,255,.06);
+    min-height: var(--ah-navbar-h);
+}
+
+.brand-icon-lg {
+    font-size: 1.6rem;
+    color: var(--ah-primary);
+    flex-shrink: 0;
+    line-height: 1;
+}
+
+.brand-text {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #fff;
+    white-space: nowrap;
+    letter-spacing: -.02em;
+    transition: opacity .2s;
+}
+
+.adhub-sidebar.collapsed .brand-text,
+.adhub-sidebar.collapsed .nav-section-label,
+.adhub-sidebar.collapsed .sidebar-role-badge,
+.adhub-sidebar.collapsed .sidebar-footer .nav-link-item span,
+.adhub-sidebar.collapsed .nav-link-item span,
+.adhub-sidebar.collapsed .nav-badge { opacity: 0; pointer-events: none; width: 0; overflow: hidden; }
+
+/* Role badge */
+.sidebar-role-badge {
+    padding: 10px 20px 6px;
+    transition: opacity .2s;
+}
+
+/* Nav sections */
+.sidebar-nav {
+    flex: 1;
+    padding: 8px 12px;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+.nav-section-label {
+    font-size: .65rem;
+    font-weight: 700;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    color: var(--ah-text-light);
+    padding: 14px 8px 4px;
+    white-space: nowrap;
+    transition: opacity .2s;
+}
+
+/* Nav items */
+.nav-link-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 9px 12px;
+    border-radius: var(--ah-radius-sm);
+    color: var(--ah-sidebar-text);
+    font-size: .875rem;
+    font-weight: 500;
+    transition: background .15s, color .15s;
+    cursor: pointer;
+    white-space: nowrap;
+    margin-bottom: 2px;
+}
+
+.nav-link-item i {
+    font-size: 1.1rem;
+    flex-shrink: 0;
+    width: 20px;
+    text-align: center;
+}
+
+.nav-link-item:hover {
+    background: rgba(255,255,255,.07);
+    color: #fff;
+}
+
+.nav-link-item.active {
+    background: var(--ah-primary);
+    color: #fff;
+    box-shadow: 0 4px 12px rgba(79,70,229,.35);
+}
+
+.nav-link-item.text-danger-soft { color: #fca5a5; }
+.nav-link-item.text-danger-soft:hover { background: rgba(239,68,68,.15); color: #ef4444; }
+
+/* Nav badge */
+.nav-badge {
+    margin-left: auto;
+    background: rgba(255,255,255,.15);
+    color: #fff;
+    font-size: .65rem;
+    font-weight: 700;
+    padding: 2px 7px;
+    border-radius: 20px;
+    transition: opacity .2s;
+}
+
+.nav-badge.pending { background: var(--ah-warning); color: #000; }
+
+/* Sidebar footer */
+.sidebar-footer {
+    padding: 12px;
+    border-top: 1px solid rgba(255,255,255,.06);
+}
+
+/* ── 5. Main content area ─────────────────────────────────── */
+.adhub-content-wrapper {
+    flex: 1;
+    margin-left: var(--ah-sidebar-w);
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    transition: margin-left .25s ease;
+}
+
+.adhub-content-wrapper.sidebar-collapsed {
+    margin-left: 72px;
+}
+
+/* ── 6. Top Navbar ────────────────────────────────────────── */
+.adhub-navbar {
+    height: var(--ah-navbar-h);
+    background: var(--ah-surface);
+    border-bottom: 1px solid var(--ah-border);
+    position: sticky;
+    top: 0;
+    z-index: 1030;
+    box-shadow: var(--ah-shadow);
+    padding: 0;
+}
+
+.adhub-brand {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--ah-primary);
+}
+
+.brand-icon { font-size: 1.2rem; }
+
+/* Sidebar toggle */
+.sidebar-toggle {
+    color: var(--ah-text-muted);
+    transition: color .15s;
+}
+.sidebar-toggle:hover { color: var(--ah-primary); }
+
+/* Search bar */
+.adhub-search {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--ah-bg);
+    border: 1px solid var(--ah-border);
+    border-radius: 50px;
+    padding: 6px 16px;
+    color: var(--ah-text-muted);
+}
+
+.adhub-search-input {
+    border: none;
+    background: transparent;
+    outline: none;
+    font-size: .875rem;
+    font-family: var(--font-body);
+    width: 200px;
+    color: var(--ah-text);
+}
+
+.adhub-search-input::placeholder { color: var(--ah-text-light); }
+
+/* Nav icon button */
+.nav-icon-btn {
+    color: var(--ah-text-muted);
+    position: relative;
+    padding: 6px;
+}
+
+.nav-icon-btn:hover { color: var(--ah-primary); }
+
+/* Notification dot */
+.badge-dot {
+    position: absolute;
+    top: 5px; right: 5px;
+    width: 8px; height: 8px;
+    background: var(--ah-danger);
+    border-radius: 50%;
+    border: 2px solid #fff;
+}
+
+/* User avatar */
+.adhub-avatar {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--ah-primary), var(--ah-accent));
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: .875rem;
+    flex-shrink: 0;
+}
+
+.nav-user-btn { text-decoration: none; color: inherit; }
+
+.user-name-nav {
+    font-size: .875rem;
+    font-weight: 600;
+    line-height: 1.2;
+    color: var(--ah-text);
+}
+
+.user-role-nav {
+    font-size: .7rem;
+    color: var(--ah-text-muted);
+    text-transform: capitalize;
+}
+
+/* Dropdowns */
+.adhub-dropdown {
+    border: 1px solid var(--ah-border);
+    border-radius: var(--ah-radius);
+    padding: 6px;
+    font-size: .875rem;
+}
+
+.adhub-dropdown .dropdown-item {
+    border-radius: var(--ah-radius-sm);
+    padding: 8px 12px;
+    color: var(--ah-text);
+    transition: background .15s;
+}
+
+.adhub-dropdown .dropdown-item:hover { background: var(--ah-bg); }
+.adhub-dropdown .dropdown-item.text-danger:hover { background: #fef2f2; }
+
+.dropdown-header {
+    font-size: .8rem;
+    font-weight: 600;
+    color: var(--ah-text);
+}
+
+/* Notification items */
+.notification-item {
+    display: flex !important;
+    align-items: center;
+    gap: 12px;
+}
+
+.notif-icon {
+    width: 36px; height: 36px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.bg-primary-soft { background: var(--ah-primary-light); }
+.bg-warning-soft { background: #fffbeb; }
+.bg-success-soft { background: #d1fae5; }
+
+.notif-title { font-size: .8rem; font-weight: 600; }
+.notif-time  { font-size: .7rem; color: var(--ah-text-muted); }
+
+/* ── 7. Main page area ────────────────────────────────────── */
+.adhub-main {
+    flex: 1;
+    padding: 28px 28px 20px;
+}
+
+/* Page header */
+.page-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-bottom: 24px;
+}
+
+.page-title {
+    font-family: var(--font-heading);
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--ah-text);
+    margin: 0;
+}
+
+.page-subtitle {
+    font-size: .875rem;
+    color: var(--ah-text-muted);
+    margin: 2px 0 0;
+}
+
+/* ── 8. Stat Cards ────────────────────────────────────────── */
+.stat-card {
+    background: var(--ah-surface);
+    border-radius: var(--ah-radius);
+    border: 1px solid var(--ah-border);
+    padding: 22px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    box-shadow: var(--ah-shadow);
+    transition: box-shadow .2s, transform .2s;
+    height: 100%;
+}
+
+.stat-card:hover {
+    box-shadow: var(--ah-shadow-md);
+    transform: translateY(-2px);
+}
+
+.stat-icon {
+    width: 52px; height: 52px;
+    border-radius: var(--ah-radius);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.4rem;
+    flex-shrink: 0;
+}
+
+.stat-icon.indigo  { background: var(--ah-primary-light); color: var(--ah-primary); }
+.stat-icon.cyan    { background: #cffafe; color: #0891b2; }
+.stat-icon.green   { background: #d1fae5; color: var(--ah-success); }
+.stat-icon.amber   { background: #fef3c7; color: var(--ah-warning); }
+.stat-icon.red     { background: #fee2e2; color: var(--ah-danger); }
+.stat-icon.blue    { background: #dbeafe; color: var(--ah-info); }
+
+.stat-value {
+    font-family: var(--font-heading);
+    font-size: 1.6rem;
+    font-weight: 700;
+    line-height: 1;
+    color: var(--ah-text);
+}
+
+.stat-label {
+    font-size: .8rem;
+    color: var(--ah-text-muted);
+    margin-top: 3px;
+}
+
+.stat-change {
+    font-size: .75rem;
+    font-weight: 600;
+    margin-top: 4px;
+}
+
+.stat-change.up   { color: var(--ah-success); }
+.stat-change.down { color: var(--ah-danger); }
+
+/* ── 9. Cards ─────────────────────────────────────────────── */
+.adhub-card {
+    background: var(--ah-surface);
+    border: 1px solid var(--ah-border);
+    border-radius: var(--ah-radius);
+    box-shadow: var(--ah-shadow);
+}
+
+.adhub-card .card-header {
+    background: transparent;
+    border-bottom: 1px solid var(--ah-border);
+    padding: 16px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.adhub-card .card-title {
+    font-family: var(--font-heading);
+    font-size: .95rem;
+    font-weight: 600;
+    margin: 0;
+}
+
+.adhub-card .card-body { padding: 20px; }
+
+/* ── 10. Tables ───────────────────────────────────────────── */
+.adhub-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+}
+
+.adhub-table thead th {
+    font-size: .7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .06em;
+    color: var(--ah-text-muted);
+    padding: 10px 14px;
+    background: var(--ah-bg);
+    border-bottom: 1px solid var(--ah-border);
+    white-space: nowrap;
+}
+
+.adhub-table tbody td {
+    padding: 12px 14px;
+    border-bottom: 1px solid var(--ah-border);
+    font-size: .875rem;
+    vertical-align: middle;
+}
+
+.adhub-table tbody tr:last-child td { border-bottom: none; }
+
+.adhub-table tbody tr:hover { background: var(--ah-bg); }
+
+/* ── 11. Badges ───────────────────────────────────────────── */
+.adhub-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-size: .7rem;
+    font-weight: 600;
+    letter-spacing: .02em;
+}
+
+.adhub-badge::before {
+    content: '';
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: currentColor;
+}
+
+.badge-active    { background: #d1fae5; color: #065f46; }
+.badge-draft     { background: #f3f4f6; color: #374151; }
+.badge-review    { background: #fef3c7; color: #92400e; }
+.badge-completed { background: #dbeafe; color: #1e40af; }
+.badge-paused    { background: #ede9fe; color: #5b21b6; }
+.badge-pending   { background: #fef3c7; color: #92400e; }
+.badge-approved  { background: #d1fae5; color: #065f46; }
+.badge-revision  { background: #fee2e2; color: #991b1b; }
+
+/* ── 12. Progress Bars ────────────────────────────────────── */
+.adhub-progress {
+    height: 6px;
+    border-radius: 3px;
+    background: var(--ah-bg);
+    overflow: hidden;
+}
+
+.adhub-progress-bar {
+    height: 100%;
+    border-radius: 3px;
+    background: linear-gradient(90deg, var(--ah-primary), var(--ah-accent));
+    transition: width .6s ease;
+}
+
+/* ── 13. Buttons ──────────────────────────────────────────── */
+.btn-adhub-primary {
+    background: var(--ah-primary);
+    border-color: var(--ah-primary);
+    color: #fff;
+    font-weight: 600;
+    border-radius: var(--ah-radius-sm);
+    padding: 8px 18px;
+    font-size: .875rem;
+    transition: background .15s, box-shadow .15s;
+}
+
+.btn-adhub-primary:hover {
+    background: var(--ah-primary-dark);
+    border-color: var(--ah-primary-dark);
+    color: #fff;
+    box-shadow: 0 4px 12px rgba(79,70,229,.3);
+}
+
+/* ── 14. Forms ────────────────────────────────────────────── */
+.adhub-input {
+    border: 1px solid var(--ah-border);
+    border-radius: var(--ah-radius-sm);
+    padding: 9px 14px;
+    font-size: .875rem;
+    font-family: var(--font-body);
+    color: var(--ah-text);
+    transition: border-color .15s, box-shadow .15s;
+    background: var(--ah-surface);
+    width: 100%;
+}
+
+.adhub-input:focus {
+    border-color: var(--ah-primary);
+    box-shadow: 0 0 0 3px rgba(79,70,229,.12);
+    outline: none;
+}
+
+.adhub-label {
+    font-size: .8rem;
+    font-weight: 600;
+    color: var(--ah-text-muted);
+    text-transform: uppercase;
+    letter-spacing: .04em;
+    margin-bottom: 5px;
+    display: block;
+}
+
+/* ── 15. Footer ───────────────────────────────────────────── */
+.adhub-footer {
+    background: var(--ah-surface);
+    border-top: 1px solid var(--ah-border);
+    padding: 14px 28px;
+    font-size: .8rem;
+    color: var(--ah-text-muted);
+    margin-left: var(--ah-sidebar-w);
+    transition: margin-left .25s ease;
+}
+
+.adhub-footer.sidebar-collapsed { margin-left: 72px; }
+
+/* ── 16. Auth Pages ───────────────────────────────────────── */
+.auth-page {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #0f172a 100%);
+    padding: 20px;
+}
+
+.auth-card {
+    background: #fff;
+    border-radius: 20px;
+    padding: 40px;
+    width: 100%;
+    max-width: 440px;
+    box-shadow: 0 25px 60px rgba(0,0,0,.3);
+}
+
+.auth-logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 28px;
+}
+
+.auth-logo-icon {
+    font-size: 2rem;
+    color: var(--ah-primary);
+}
+
+.auth-logo-text {
+    font-family: var(--font-heading);
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--ah-text);
+}
+
+.auth-title {
+    font-family: var(--font-heading);
+    font-size: 1.4rem;
+    font-weight: 700;
+    margin-bottom: 4px;
+}
+
+.auth-subtitle {
+    color: var(--ah-text-muted);
+    font-size: .875rem;
+    margin-bottom: 24px;
+}
+
+/* ── 17. Upload Zone ──────────────────────────────────────── */
+.upload-zone {
+    border: 2px dashed var(--ah-border);
+    border-radius: var(--ah-radius);
+    padding: 40px;
+    text-align: center;
+    cursor: pointer;
+    transition: border-color .2s, background .2s;
+}
+
+.upload-zone:hover,
+.upload-zone.dragover {
+    border-color: var(--ah-primary);
+    background: var(--ah-primary-light);
+}
+
+.upload-zone i { font-size: 2.5rem; color: var(--ah-text-light); margin-bottom: 12px; }
+
+/* ── 18. Utility helpers ──────────────────────────────────── */
+.fw-600 { font-weight: 600; }
+
+.text-primary-adhub { color: var(--ah-primary); }
+
+.bg-adhub-light { background: var(--ah-bg); }
+
+.rounded-adhub { border-radius: var(--ah-radius); }
+
+/* ── 19. Responsive ───────────────────────────────────────── */
+@media (max-width: 991.98px) {
+    .adhub-sidebar {
+        transform: translateX(-100%);
+    }
+
+    .adhub-sidebar.mobile-open {
+        transform: translateX(0);
+    }
+
+    .adhub-content-wrapper {
+        margin-left: 0 !important;
+    }
+
+    .adhub-footer {
+        margin-left: 0 !important;
+    }
+
+    .sidebar-overlay {
+        display: block !important;
+    }
+}
+
+/* Sidebar overlay for mobile */
+.sidebar-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,.4);
+    z-index: 1039;
+    backdrop-filter: blur(2px);
+}
+
+@media (max-width: 575.98px) {
+    .adhub-main { padding: 16px; }
+    .page-header { flex-direction: column; }
+    .stat-value { font-size: 1.3rem; }
+}

@@ -1,0 +1,32 @@
+# AdHub — Apache .htaccess
+# Place this in /adhub/ root
+
+Options -Indexes
+ServerSignature Off
+
+# ── Block access to sensitive files ──────────────────────────────────────────
+<FilesMatch "\.(sql|md|log|sh|env)$">
+    Order allow,deny
+    Deny from all
+</FilesMatch>
+
+# ── Block direct access to includes ──────────────────────────────────────────
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+
+    # Block direct access to /includes/
+    RewriteRule ^includes/ - [F,L]
+
+    # Route root to index.php
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteRule ^$ /adhub/index.php [L]
+</IfModule>
+
+# ── PHP settings ──────────────────────────────────────────────────────────────
+<IfModule mod_php.c>
+    php_flag display_errors Off
+    php_value upload_max_filesize 10M
+    php_value post_max_size 12M
+    php_value max_execution_time 30
+</IfModule>
